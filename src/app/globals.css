@@ -1,6 +1,35 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@keyframes marquee {
+  from {
+    transform: translateY(0%);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@layer utilities {
+  .animate-marquee {
+    animation: marquee var(--marquee-duration, 20s) linear infinite;
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.5s linear forwards;
+  }
+}
+
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
