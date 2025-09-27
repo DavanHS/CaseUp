@@ -23,6 +23,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, ChevronsUpDown, Radio } from "lucide-react";
 import { BASE_PRICE } from "@/config/products";
+import { useUploadThing } from "@/lib/uploadthing";
+import { toast } from "sonner";
 
 interface DesignConfiguratorProps {
   configId: string;
@@ -59,6 +61,8 @@ function DesignConfigurator({
 
   const phoneCaseRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const { startUpload } = useUploadThing("imageUploader");
 
   async function saveConfiguration() {
     try {
@@ -101,8 +105,14 @@ function DesignConfigurator({
 
       const blob = base64ToBlob(base64Data, "image/png");
       const file = new File([blob], "filename.png", { type: "image/png" });
-      
-    } catch (error) {}
+      await startUpload([file], { configId });
+    } catch (error: any) {
+      toast.error("Something went wrong", {
+        description:
+          error.message ||
+          "There was a problem saving your config, please try again.",
+      });
+    }
   }
 
   function base64ToBlob(base64: string, mimeType: string) {
@@ -217,7 +227,7 @@ function DesignConfigurator({
                         <div
                           className={cn(
                             `bg-${color.tw}`,
-                            "h-8 w-8 rounded-full border border=black border-capacity-10 "
+                            "h-8 w-8 rounded-full border border-black border-capacity-10 "
                           )}
                         />
                       </RadioGroup.Option>
