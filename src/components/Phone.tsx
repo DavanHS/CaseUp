@@ -20,13 +20,13 @@ const Phone = ({ imgSrc, className, dark = false, ...props }: PhoneProps) => {
             ? "/phone-template-dark-edges.png"
             : "/phone-template-white-edges.png"
         }
-        className="pointer-events-none z-50 select-none"
+        className="pointer-events-none z-2 select-none relative w-full h-full"
       />
-      <div className="absolute -z-10 inset-0">
+      <div className="absolute z-1 inset-0 overflow-hidden">
         <img
           src={imgSrc}
           alt="overlaying phone image"
-          className="object-cover"
+          className="object-cover w-full h-full"
         />
       </div>
     </div>
