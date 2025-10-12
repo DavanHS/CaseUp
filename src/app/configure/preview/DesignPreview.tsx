@@ -6,6 +6,7 @@ import { BASE_PRICE, PRODUCT_PRICES } from "@/config/products";
 import { Configuration } from "@/generated/prisma/client";
 import { cn, formatPrice } from "@/lib/utils";
 import { COLORS, MODELS } from "@/validators/option-validator";
+import { useMutation } from "@tanstack/react-query";
 import { ArrowRight, Check } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Confetti from "react-dom-confetti";
@@ -28,6 +29,11 @@ function DesignPreview({ configuration }: { configuration: Configuration }) {
     totalPrice += PRODUCT_PRICES.material.polycarbonate;
   if(finish === "textured")
     totalPrice += PRODUCT_PRICES.finish.textured
+
+  const {} = useMutation({
+    mutationKey: ["get-checkout-session"],
+    mutationFn: 
+  })
 
   return (
     <>
