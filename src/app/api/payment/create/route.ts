@@ -1,10 +1,20 @@
 import { db } from "@/db";
 import { razorpay, formatAmountForRazorpay } from "@/lib/razorpay";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
     const { configurationId, amount } = await req.json();
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+
+    if (!user || !user.id) {
+      return NextResponse.json(
+        { error: "User not authenticated" },
+        { status: 401 }
+      );
+    }
 
     if (!configurationId || !amount) {
       return NextResponse.json(
@@ -20,6 +30,7 @@ export async function POST(req: NextRequest) {
       currency: "INR",
       notes: {
         configurationId,
+        userId: user.id,
       },
     });
 

@@ -3,6 +3,7 @@
 import { BASE_PRICE, PRODUCT_PRICES } from "@/config/products"
 import { db } from "@/db"
 import { Order } from "@/generated/prisma"
+import { razorpay } from "@/lib/razorpay"
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server"
 
 export const createCheckoutSession = async ({ configId }: { configId: string }) => {
@@ -48,8 +49,4 @@ export const createCheckoutSession = async ({ configId }: { configId: string }) 
             }
         })
     }
-
-    
-
-
 }

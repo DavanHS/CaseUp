@@ -8,12 +8,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum PaymentStatus {
-  PENDING
-  COMPLETED
-  FAILED
-}
-
 enum OrderStatus {
   fulfilled
   shipped
@@ -43,14 +37,14 @@ enum CaseColor {
   rose
 }
 
-enum ConfigurationStatus {
+enum PaymentStatus {
   PENDING
-  PAID
+  COMPLETED
   FAILED
 }
 
 model Configuration {
-  id              String              @id @default(cuid())
+  id              String        @id @default(cuid())
   width           Int
   height          Int
   imageUrl        String
@@ -59,7 +53,7 @@ model Configuration {
   material        CaseMaterial?
   finish          CaseFinish?
   croppedImageUrl String?
-  status          ConfigurationStatus @default(PENDING)
+  status          OrderStatus   @default(awaiting_shipment)
   Order           Order[]
   Payment         Payment[]
 }
@@ -121,10 +115,10 @@ model Payment {
   orderId         String        @unique
   paymentId       String?       @unique
   amount          Float
-  status          PaymentStatus
+  status          PaymentStatus @default(PENDING)
   configurationId String
   configuration   Configuration @relation(fields: [configurationId], references: [id])
-  
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

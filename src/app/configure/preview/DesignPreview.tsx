@@ -4,17 +4,40 @@ import Phone from "@/components/Phone";
 import { Button } from "@/components/ui/button";
 import { BASE_PRICE, PRODUCT_PRICES } from "@/config/products";
 import { Configuration } from "@/generated/prisma/client";
-import { PaymentButton } from "@/components/PaymentButton";
 import { cn, formatPrice } from "@/lib/utils";
-import { COLORS, MODELS } from "@/validators/option-validator";
+import { COLORS, MODELS, FINISHES } from "@/validators/option-validator";
 import { useMutation } from "@tanstack/react-query";
 import { ArrowRight, Check } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Confetti from "react-dom-confetti";
+import LoginModal from "@/components/LoginModal";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { createCheckoutSession } from "./actions";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 function DesignPreview({ configuration }: { configuration: Configuration }) {
+  const {id} = configuration
+  const { user } = useKindeBrowserClient();
+  const router = useRouter();
+
   const [showConfetti, setShowConfetti] = useState(false);
-  useEffect(() => setShowConfetti(true));
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  useEffect(() => {
+    setShowConfetti(true);
+    
+    // Check for saved configuration on mount
+    const savedConfiguration = localStorage.getItem('savedConfiguration');
+    if (savedConfiguration) {
+      const parsedConfig = JSON.parse(savedConfiguration);
+      // If the IDs match, we're on the right page for the saved configuration
+      if (parsedConfig.id === configuration.id) {
+        localStorage.removeItem('savedConfiguration');
+        localStorage.removeItem('configurationId');
+      }
+    }
+  }, [configuration.id]);
+
   const { color, model, finish, material } = configuration;
 
   const tw = COLORS.find(
@@ -26,10 +49,89 @@ function DesignPreview({ configuration }: { configuration: Configuration }) {
   )!;
 
   let totalPrice = BASE_PRICE;
-  if(material === "polycarbonate") 
+  if (material === "polycarbonate")
     totalPrice += PRODUCT_PRICES.material.polycarbonate;
-  if(finish === "textured")
-    totalPrice += PRODUCT_PRICES.finish.textured
+  if (finish === "textured") totalPrice += PRODUCT_PRICES.finish.textured;
+
+  const { mutate: initializePayment } = useMutation({
+    mutationKey: ["initialize-payment"],
+    mutationFn: async () => {
+      const response = await fetch("/api/payment/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          configurationId: id,
+          amount: totalPrice,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Payment initialization failed");
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      const options = {
+        key: data.key,
+        amount: data.amount,
+        currency: data.currency,
+        name: "CaseUp",
+        description: "Custom Phone Case Payment",
+        order_id: data.orderId,
+        handler: function (response: any) {
+          toast.success("Payment successful!", {
+            description: "Your order has been confirmed.",
+          });
+          router.push("/thank-you");
+        },
+        modal: {
+          ondismiss: function() {
+            toast.error("Payment cancelled", {
+              description: "You can try the payment again when you're ready.",
+            });
+          }
+        },
+        prefill: {
+          name: user?.given_name,
+          email: user?.email,
+        },
+        theme: {
+          color: "#000000",
+        },
+      };
+
+      const razorpay = new (window as any).Razorpay(options);
+      razorpay.open();
+    },
+    onError: () => {
+      toast.error("Something went wrong", {
+        description: "There was an error initializing the payment. Please try again.",
+      });
+    },
+  });
+
+  const handleCheckout = () => {
+    if (user) {
+      // Load Razorpay script if not already loaded
+      if (!(window as any).Razorpay) {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.async = true;
+        script.onload = () => {
+          initializePayment();
+        };
+        document.body.appendChild(script);
+      } else {
+        initializePayment();
+      }
+    } else {
+      // Store both the ID and the full configuration
+      localStorage.setItem("configurationId", id);
+      localStorage.setItem("savedConfiguration", JSON.stringify(configuration));
+      setIsLoginModalOpen(true);
+    }
+  }
 
   return (
     <>
@@ -42,6 +144,8 @@ function DesignPreview({ configuration }: { configuration: Configuration }) {
           config={{ elementCount: 200, spread: 90 }}
         />
       </div>
+
+      <LoginModal isOpen={isLoginModalOpen} setIsOpen={setIsLoginModalOpen} />
 
       <div className="mt-20 grid grid-col-1 text-sm sm:grid-cols-12 sm:grid-rows-1 sm: gap-x-6 md:gap-x-8 lg:gap-x-12">
         <div className="sm:col-span-4 md:col-span-3 md:row-span-2 md:row-end-2">
@@ -89,33 +193,36 @@ function DesignPreview({ configuration }: { configuration: Configuration }) {
                 </div>
                 {finish === "textured" ? (
                   <div className="flex items-center justify-between py-1 mt-2 ">
-                  <p className="text-gray-600">Textured Finish</p>
-                  <p className="font-medium text-gray-900">
-                    {formatPrice(PRODUCT_PRICES.finish.textured)}
-                  </p>
-                </div>
+                    <p className="text-gray-600">Textured Finish</p>
+                    <p className="font-medium text-gray-900">
+                      {formatPrice(PRODUCT_PRICES.finish.textured)}
+                    </p>
+                  </div>
                 ) : null}
                 {material === "polycarbonate" ? (
                   <div className="flex items-center justify-between py-1 mt-2 ">
-                  <p className="text-gray-600">Soft polycarbonate material</p>
-                  <p className="font-medium text-gray-900">
-                    {formatPrice(PRODUCT_PRICES.material.polycarbonate)}
-                  </p>
-                </div>
+                    <p className="text-gray-600">Soft polycarbonate material</p>
+                    <p className="font-medium text-gray-900">
+                      {formatPrice(PRODUCT_PRICES.material.polycarbonate)}
+                    </p>
+                  </div>
                 ) : null}
 
-                <div className="my-2 h-px bg-gray-200"/>
+                <div className="my-2 h-px bg-gray-200" />
                 <div className="flex items-center justify-between py-2">
                   <p className="font-semibold text-gray-900">Order total</p>
-                  <p className="font-semibold text-gray-900">{formatPrice(totalPrice)}</p>
+                  <p className="font-semibold text-gray-900">
+                    {formatPrice(totalPrice)}
+                  </p>
                 </div>
               </div>
             </div>
             <div className="mt-8 flex justify-end pb-12">
-              <PaymentButton 
-                configurationId={configuration.id}
-                amount={totalPrice}
-              />
+              <Button
+                onClick={() => handleCheckout()}
+                className='px-4 sm:px-6 lg:px-8'>
+                Check out <ArrowRight className='h-4 w-4 ml-1.5 inline' />
+              </Button>
             </div>
           </div>
         </div>
