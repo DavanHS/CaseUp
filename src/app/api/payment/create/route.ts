@@ -25,6 +25,35 @@ export async function POST(req: NextRequest) {
 
     const amountInPaise = formatAmountForRazorpay(amount);
 
+    if (!razorpay) {
+      // Mock order creation for deployment without API keys
+      const mockOrder = {
+        id: `mock_order_${Date.now()}`,
+        amount: amountInPaise,
+        currency: "INR",
+        notes: {
+          configurationId,
+          userId: user.id,
+        },
+      };
+
+      await db.payment.create({
+        data: {
+          orderId: mockOrder.id,
+          amount: amount,
+          status: "PENDING",
+          configurationId,
+        },
+      });
+
+      return NextResponse.json({ 
+        orderId: mockOrder.id,
+        amount: amountInPaise,
+        currency: "INR",
+        key: process.env.RAZORPAY_KEY_ID,
+      });
+    }
+
     const order = await razorpay.orders.create({
       amount: amountInPaise,
       currency: "INR",
