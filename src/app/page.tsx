@@ -45,30 +45,40 @@ export default function Home() {
               </ul>
               <div className="mt-12 flex flex-col sm:flex-row items-center sm:items-start gap-5">
                 <div className="flex -space-x-4">
-                  <img
+                  <Image
                     src="/users/user-1.png"
-                    alt="user image"
-                    className="inline-block h-10 w-10 rounded-full ring-2 ring-slate-100"
+                    alt="Profile picture of a satisfied customer"
+                    width={40}
+                    height={40}
+                    className="inline-block rounded-full ring-2 ring-slate-100"
                   />
-                  <img
+                  <Image
                     src="/users/user-2.png"
-                    alt="user image"
-                    className="inline-block h-10 w-10 rounded-full ring-2 ring-slate-100"
+                    alt="Profile picture of a satisfied customer"
+                    width={40}
+                    height={40}
+                    className="inline-block rounded-full ring-2 ring-slate-100"
                   />
-                  <img
+                  <Image
                     src="/users/user-3.png"
-                    alt="user image"
-                    className="inline-block h-10 w-10 rounded-full ring-2 ring-slate-100"
+                    alt="Profile picture of a satisfied customer"
+                    width={40}
+                    height={40}
+                    className="inline-block rounded-full ring-2 ring-slate-100"
                   />
-                  <img
+                  <Image
                     src="/users/user-4.jpg"
-                    alt="user image"
-                    className="inline-block h-10 w-10 rounded-full ring-2 ring-slate-100"
+                    alt="Profile picture of a satisfied customer"
+                    width={40}
+                    height={40}
+                    className="inline-block rounded-full ring-2 ring-slate-100"
                   />
-                  <img
+                  <Image
                     src="/users/user-5.jpg"
-                    alt="user image"
-                    className="inline-block object-cover h-10 w-10 rounded-full ring-2 ring-slate-100"
+                    alt="Profile picture of a satisfied customer"
+                    width={40}
+                    height={40}
+                    className="inline-block object-cover rounded-full ring-2 ring-slate-100"
                   />
                 </div>
                 <div className="flex flex-col justify-between items-center sm:items-start">
@@ -89,12 +99,18 @@ export default function Home() {
 
           <div className="col-span-full lg:col-span-1 w-full flex justify-center px-8 sm:px-16 md:px-0 mt-32 lg:mx-0 lg:mt-20 h-fit">
             <div className="relative md:max-w-xl">
-              <img
+                            <Image
                 src="/your-image.png"
+                alt="Custom case preview"
+                width={208}
+                height={208}
                 className="absolute w-40 lg:w-52 left-56 -top-20 select-none hidden sm:block lg:hidden xl:block"
               />
-              <img
+              <Image
                 src="/line.png"
+                alt="Decorative line"
+                width={80}
+                height={80}
                 className="absolute w-20 -left-6 -bottom-6 select-none"
               />
               <Phone className="w-64" imgSrc="/testimonials/1.jpg" />
@@ -128,13 +144,13 @@ export default function Home() {
               </div>
               <div className="text-lg leading-8">
                 <p>
-                  "The case feels durable and I even got a compliment on the
+&ldquo;The case feels durable and I even got a compliment on the
                   design. Had the case for two and a half months now and{" "}
                   <span className="p-0.5 bg-slate-800 text-white">
                     the image is super clear
                   </span>
                   , on the case I had before,the image started fading into
-                  yellow-ish color after a couple weeks. Love it."
+                  yellow-ish color after a couple weeks. Love it.&rdquo;
                 </p>
               </div>
               <div className="flex gap-4 mt-2">
@@ -163,21 +179,23 @@ export default function Home() {
               </div>
               <div className="text-lg leading-8">
                 <p>
-                  "I usually keep my phone together with my keys in my pocket
+                  &ldquo;I usually keep my phone together with my keys in my pocket
                   and that lead to some pretty heavy scratchmarks on all of my
                   last phone cases. This one, besides a barely noticeable
                   scratch on the corner,
                   <span className="p-0.5 bg-slate-800 text-white">
                     looks brand new after about half a year
                   </span>
-                  . I dig it."
+                  . I dig it.&rdquo;
                 </p>
               </div>
               <div className="flex gap-4 mt-2">
-                <img
+                <Image
                   src="/users/user-4.jpg"
-                  alt="user"
-                  className="rounded-full h-12 w-12 object-cover"
+                  alt="Profile picture of Chris"
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover"
                 />
                 <div className="flex flex-col">
                   <p className="font-semibold">Chris</p>
@@ -210,14 +228,19 @@ export default function Home() {
           </div>
           <div className="mx-auto max-w-6xl px-6 lg:px-8">
             <div className="relative flex flex-col items-center md:grid grid-cols-2 gap-40">
-              <img
+              <Image
                 src="/arrow.png"
+                alt="Directional arrow"
+                width={100}
+                height={100}
                 className="absolute top-[25rem] md:top-1/2 -translate-y-1/2 z-10 left-1/2 -translate-x-1/2 rotate-90 md:rotate-0"
               />
               <div className="relative h-80 md:h-full w-full md:justify-self-end max-w-sm rounded-xl bg-gray-900/5 ring-inset ring-gray-900/10 lg:rounded-2xl">
-                <img
+                <Image
                   src="/horse.jpg"
-                  alt=""
+                  alt="Sample image of a horse"
+                  width={400}
+                  height={320}
                   className="rounded-md object-cover bg-white shadow-2xl ring-1 ring-gray-900/10 h-full w-full"
                 />
               </div>
