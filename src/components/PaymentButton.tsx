@@ -1,16 +1,11 @@
 import { formatPrice } from "@/lib/utils";
 import { useCallback, useEffect } from "react";
 import { Button } from "./ui/button";
+import { RazorpayOptions, RazorpayResponse } from "@/types/razorpay";
 
 interface PaymentButtonProps {
   configurationId: string;
   amount: number;
-}
-
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
 }
 
 export function PaymentButton({ configurationId, amount }: PaymentButtonProps) {
@@ -23,10 +18,10 @@ export function PaymentButton({ configurationId, amount }: PaymentButtonProps) {
 
   const initializeRazorpayPayment = useCallback(async () => {
     try {
-      const response = await fetch("/api/payment/create", {
-        method: "POST",
+      const response = await fetch('/api/payment/create', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           configurationId,
@@ -35,36 +30,40 @@ export function PaymentButton({ configurationId, amount }: PaymentButtonProps) {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to initialize payment");
+        throw new Error('Failed to initialize payment');
       }
 
       const data = await response.json();
 
-      const options = {
+      const options: RazorpayOptions = {
         key: data.key,
         amount: data.amount,
         currency: data.currency,
-        name: "CaseUp",
-        description: "Custom Phone Case Payment",
+        name: 'CaseUp',
+        description: 'Custom Phone Case Payment',
         order_id: data.orderId,
-        handler: function (response: any) {
-          console.log("Payment successful:", response);
+        handler: function (response: RazorpayResponse) {
+          console.log('Payment successful:', response);
           // Redirect to thank you page
-          window.location.href = "/thank-you";
+          window.location.href = '/thank-you';
         },
         prefill: {
-          name: "Customer Name",
-          email: "customer@example.com",
+          name: 'Customer Name',
+          email: 'customer@example.com',
         },
         theme: {
-          color: "#000000",
+          color: '#000000',
         },
       };
+
+      if (!window.Razorpay) {
+        throw new Error('Razorpay is not loaded');
+      }
 
       const razorpay = new window.Razorpay(options);
       razorpay.open();
     } catch (error) {
-      console.error("Payment initialization failed:", error);
+      console.error('Payment initialization failed:', error instanceof Error ? error.message : 'Unknown error');
     }
   }, [configurationId, amount]);
 

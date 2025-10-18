@@ -7,7 +7,7 @@ import { getAuthStatus } from './actions';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-function page() {
+function Page() {
     const router = useRouter();
     const [isRedirecting, setIsRedirecting] = useState(false);
 
@@ -86,4 +86,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

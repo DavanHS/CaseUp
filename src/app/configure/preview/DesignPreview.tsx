@@ -15,6 +15,7 @@ import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { createCheckoutSession } from "./actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { RazorpayOptions, RazorpayResponse } from "@/types/razorpay";
 
 function DesignPreview({ configuration }: { configuration: Configuration }) {
   const {id} = configuration
@@ -67,46 +68,46 @@ function DesignPreview({ configuration }: { configuration: Configuration }) {
         }),
       });
       if (!response.ok) {
-        throw new Error("Payment initialization failed");
+        throw new Error('Payment initialization failed');
       }
       return response.json();
     },
-    onSuccess: (data) => {
-      const options = {
+    onSuccess: (data: { key: string; amount: number; currency: string; orderId: string }) => {
+      const options: RazorpayOptions = {
         key: data.key,
         amount: data.amount,
         currency: data.currency,
-        name: "CaseUp",
-        description: "Custom Phone Case Payment",
+        name: 'CaseUp',
+        description: 'Custom Phone Case Payment',
         order_id: data.orderId,
-        handler: function (response: any) {
-          toast.success("Payment successful!", {
-            description: "Your order has been confirmed.",
+        handler: function (response: RazorpayResponse) {
+          toast.success('Payment successful!', {
+            description: 'Your order has been confirmed.',
           });
-          router.push("/thank-you");
+          router.push('/thank-you');
         },
         modal: {
           ondismiss: function() {
-            toast.error("Payment cancelled", {
-              description: "You can try the payment again when you're ready.",
+            toast.error('Payment cancelled', {
+              description: 'You can try the payment again when you\'re ready.',
             });
           }
         },
         prefill: {
-          name: user?.given_name,
-          email: user?.email,
+          name: user?.given_name ?? undefined,
+          email: user?.email ?? undefined,
         },
         theme: {
           color: "#000000",
         },
       };
 
-      const razorpay = new (window as any).Razorpay(options);
+      const razorpay = new window.Razorpay(options);
       razorpay.open();
     },
     onError: () => {
-      toast.error("Something went wrong", {
-        description: "There was an error initializing the payment. Please try again.",
+      toast.error('Something went wrong', {
+        description: 'There was an error initializing the payment. Please try again.',
       });
     },
   });

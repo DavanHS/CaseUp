@@ -9,7 +9,7 @@ interface PageProps {
     }>
 }
 
-async function page({searchParams}: PageProps) {
+async function Page({searchParams}: PageProps) {
     const {id} = await searchParams
     if(!id || typeof id !== "string"){
         return notFound();
@@ -27,4 +27,4 @@ async function page({searchParams}: PageProps) {
   )
 }
 
-export default page
+export default Page

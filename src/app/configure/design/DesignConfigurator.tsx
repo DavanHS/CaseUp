@@ -46,12 +46,19 @@ function DesignConfigurator({
     mutationFn: async (args: saveConfigArgs) => {
       await Promise.all([saveConfiguration(), _saveConfig(args)]);
     },
-    onError: (error: any) => {
-      toast.error("Something went wrong", {
-        description:
-          error.message ||
-          "There was a problem saving your config, please try again.",
-      });
+    onError: (error: unknown) => {
+      if (error instanceof Error) {
+        toast.error("Something went wrong", {
+          description:
+            error.message ||
+            "There was a problem saving your config, please try again.",
+        });
+      } else {
+        toast.error("Something went wrong", {
+          description:
+            "There was a problem saving your config, please try again.",
+        });
+      }
     },
     onSuccess: () => {
       router.push(`/configure/preview?id=${configId}`);
@@ -127,12 +134,19 @@ function DesignConfigurator({
       const blob = base64ToBlob(base64Data, "image/png");
       const file = new File([blob], "filename.png", { type: "image/png" });
       await startUpload([file], { configId });
-    } catch (error: any) {
-      toast.error("Something went wrong", {
-        description:
-          error.message ||
-          "There was a problem saving your config, please try again.",
-      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error("Something went wrong", {
+          description:
+            error.message ||
+            "There was a problem saving your config, please try again.",
+        });
+      } else {
+        toast.error("Something went wrong", {
+          description:
+            "There was a problem saving your config, please try again.",
+        });
+      }
     }
   }
 
