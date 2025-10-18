@@ -5,14 +5,14 @@ import { Button } from "@/components/ui/button";
 import { BASE_PRICE, PRODUCT_PRICES } from "@/config/products";
 import { Configuration } from "@/generated/prisma/client";
 import { cn, formatPrice } from "@/lib/utils";
-import { COLORS, MODELS, FINISHES } from "@/validators/option-validator";
+import { COLORS, MODELS } from "@/validators/option-validator";
 import { useMutation } from "@tanstack/react-query";
 import { ArrowRight, Check } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Confetti from "react-dom-confetti";
 import LoginModal from "@/components/LoginModal";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import { createCheckoutSession } from "./actions";
+
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { RazorpayOptions, RazorpayResponse } from "@/types/razorpay";
@@ -80,7 +80,7 @@ function DesignPreview({ configuration }: { configuration: Configuration }) {
         name: 'CaseUp',
         description: 'Custom Phone Case Payment',
         order_id: data.orderId,
-        handler: function (response: RazorpayResponse) {
+        handler: function (_: RazorpayResponse) {
           toast.success('Payment successful!', {
             description: 'Your order has been confirmed.',
           });

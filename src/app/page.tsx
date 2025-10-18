@@ -154,10 +154,12 @@ export default function Home() {
                 </p>
               </div>
               <div className="flex gap-4 mt-2">
-                <img
+                <Image
                   src="/users/user-1.png"
-                  alt="user"
-                  className="rounded-full h-12 w-12 object-cover"
+                  alt="Profile picture of Jonathan"
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover"
                 />
                 <div className="flex flex-col">
                   <p className="font-semibold">Jonathan</p>

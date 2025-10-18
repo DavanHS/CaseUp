@@ -2,7 +2,7 @@ import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { z } from 'zod'
 import sharp from 'sharp'
 import { db } from "@/db";
-import { id } from "zod/v4/locales";
+
 
 const f = createUploadthing();
 export const ourFileRouter = {
