@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import {
+import type {
   CaseColor,
   CaseFinish,
   CaseMaterial,
