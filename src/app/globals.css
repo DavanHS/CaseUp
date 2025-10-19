@@ -23,12 +23,14 @@
   .animate-marquee {
     animation: marquee var(--marquee-duration, 20s) linear infinite;
   }
-  
+
   .animate-fade-in {
     animation: fade-in 0.5s linear forwards;
   }
 }
-
+.phone-skew {
+  transform: perspective(400px) rotateY(3deg) skewX(11.1deg) skewY(-10.9deg);
+}
 
 @custom-variant dark (&:is(.dark *));
 

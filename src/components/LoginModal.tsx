@@ -10,14 +10,14 @@ import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs/components
 import { buttonVariants } from "./ui/button";
 
 function LoginModal({
-  isOpen,
-  setIsOpen,
+  LoginModalisOpen,
+  LoginModalsetIsOpen,
 }: {
-  isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  LoginModalisOpen: boolean;
+  LoginModalsetIsOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   return (
-    <Dialog onOpenChange={setIsOpen} open={isOpen}>
+    <Dialog onOpenChange={LoginModalsetIsOpen} open={LoginModalisOpen}>
       <DialogContent className="absolute z-[9999]">
         <DialogHeader>
           <DialogTitle className="text-3xl text-center font-bold tracking-tight text-gray-900">

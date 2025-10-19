@@ -15,29 +15,19 @@ import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { RazorpayOptions, RazorpayResponse } from "@/types/razorpay";
+import PaymentModal from "@/components/Payment";
+import { createCheckoutSession } from "./actions";
 
 function DesignPreview({ configuration }: { configuration: Configuration }) {
-  const {id} = configuration
+  const { id } = configuration;
   const { user } = useKindeBrowserClient();
   const router = useRouter();
 
   const [showConfetti, setShowConfetti] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  useEffect(() => {
-    setShowConfetti(true);
-    
-    // Check for saved configuration on mount
-    const savedConfiguration = localStorage.getItem('savedConfiguration');
-    if (savedConfiguration) {
-      const parsedConfig = JSON.parse(savedConfiguration);
-      // If the IDs match, we're on the right page for the saved configuration
-      if (parsedConfig.id === configuration.id) {
-        localStorage.removeItem('savedConfiguration');
-        localStorage.removeItem('configurationId');
-      }
-    }
-  }, [configuration.id]);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
+  useEffect(() => setShowConfetti(true));
 
   const { color, model, finish, material } = configuration;
 
@@ -54,85 +44,25 @@ function DesignPreview({ configuration }: { configuration: Configuration }) {
     totalPrice += PRODUCT_PRICES.material.polycarbonate;
   if (finish === "textured") totalPrice += PRODUCT_PRICES.finish.textured;
 
-  const { mutate: initializePayment } = useMutation({
-    mutationKey: ["initialize-payment"],
-    mutationFn: async () => {
-      const response = await fetch("/api/payment/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          configurationId: id,
-          amount: totalPrice,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error('Payment initialization failed');
-      }
-      return response.json();
-    },
-    onSuccess: (data: { key: string; amount: number; currency: string; orderId: string }) => {
-      const options: RazorpayOptions = {
-        key: data.key,
-        amount: data.amount,
-        currency: data.currency,
-        name: 'CaseUp',
-        description: 'Custom Phone Case Payment',
-        order_id: data.orderId,
-        handler: function (_: RazorpayResponse) {
-          toast.success('Payment successful!', {
-            description: 'Your order has been confirmed.',
-          });
-          router.push('/thank-you');
-        },
-        modal: {
-          ondismiss: function() {
-            toast.error('Payment cancelled', {
-              description: 'You can try the payment again when you\'re ready.',
-            });
-          }
-        },
-        prefill: {
-          name: user?.given_name ?? undefined,
-          email: user?.email ?? undefined,
-        },
-        theme: {
-          color: "#000000",
-        },
-      };
-
-      const razorpay = new window.Razorpay(options);
-      razorpay.open();
-    },
-    onError: () => {
-      toast.error('Something went wrong', {
-        description: 'There was an error initializing the payment. Please try again.',
-      });
-    },
+  const { mutate: createPaymentSession } = useMutation({
+    mutationKey: ["get-checkout-session"],
+    mutationFn: createCheckoutSession,
+    onSuccess: ({url}) => {
+      if(url) router.push(url)
+    }
   });
 
   const handleCheckout = () => {
     if (user) {
-      // Load Razorpay script if not already loaded
-      if (!(window as any).Razorpay) {
-        const script = document.createElement("script");
-        script.src = "https://checkout.razorpay.com/v1/checkout.js";
-        script.async = true;
-        script.onload = () => {
-          initializePayment();
-        };
-        document.body.appendChild(script);
-      } else {
-        initializePayment();
-      }
+      // // create payment session
+      createPaymentSession({ configId: id });
+      setIsPaymentModalOpen(true);
     } else {
-      // Store both the ID and the full configuration
+      // need to log in
       localStorage.setItem("configurationId", id);
-      localStorage.setItem("savedConfiguration", JSON.stringify(configuration));
       setIsLoginModalOpen(true);
     }
-  }
+  };
 
   return (
     <>
@@ -146,7 +76,14 @@ function DesignPreview({ configuration }: { configuration: Configuration }) {
         />
       </div>
 
-      <LoginModal isOpen={isLoginModalOpen} setIsOpen={setIsLoginModalOpen} />
+      <LoginModal
+        LoginModalisOpen={isLoginModalOpen}
+        LoginModalsetIsOpen={setIsLoginModalOpen}
+      />
+      <PaymentModal
+        PaymentModalisOpen={isPaymentModalOpen}
+        PaymentModalsetIsOpen={setIsPaymentModalOpen}
+      />
 
       <div className="mt-20 grid grid-col-1 text-sm sm:grid-cols-12 sm:grid-rows-1 sm: gap-x-6 md:gap-x-8 lg:gap-x-12">
         <div className="sm:col-span-4 md:col-span-3 md:row-span-2 md:row-end-2">
@@ -219,11 +156,12 @@ function DesignPreview({ configuration }: { configuration: Configuration }) {
               </div>
             </div>
             <div className="mt-8 flex justify-end pb-12">
-              {/* <Button
+              <Button
                 onClick={() => handleCheckout()}
-                className='px-4 sm:px-6 lg:px-8'>
-                Check out <ArrowRight className='h-4 w-4 ml-1.5 inline' />
-              </Button> */}
+                className="px-4 sm:px-6 lg:px-8"
+              >
+                Check out <ArrowRight className="h-4 w-4 ml-1.5 inline" />
+              </Button>
             </div>
           </div>
         </div>
