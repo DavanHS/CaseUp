@@ -1,6 +1,6 @@
 "use client";
 
-import { CaseColor } from "@/generated/prisma";
+import { CaseColor } from "@prisma/client";
 import React, { useEffect, useRef, useState } from "react";
 import { AspectRatio } from "./ui/aspect-ratio";
 import { cn } from "@/lib/utils";

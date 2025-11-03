@@ -2,7 +2,7 @@
 
 import { BASE_PRICE, PRODUCT_PRICES } from "@/config/products"
 import { db } from "@/db"
-import { Order } from "@/generated/prisma"
+import { Order } from "@prisma/client"
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server"
 
 export const createCheckoutSession = async ({ configId }: { configId: string }) => {

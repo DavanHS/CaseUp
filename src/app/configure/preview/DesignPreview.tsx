@@ -3,7 +3,7 @@
 import Phone from "@/components/Phone";
 import { Button } from "@/components/ui/button";
 import { BASE_PRICE, PRODUCT_PRICES } from "@/config/products";
-import { Configuration } from "@/generated/prisma/client";
+import { Configuration } from "@prisma/client"
 import { cn, formatPrice } from "@/lib/utils";
 import { COLORS, MODELS } from "@/validators/option-validator";
 import { useMutation } from "@tanstack/react-query";
