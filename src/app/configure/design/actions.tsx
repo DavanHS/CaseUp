@@ -1,12 +1,12 @@
 "use server";
 
 import { db } from "@/db";
-import type {
+import {
   CaseColor,
   CaseFinish,
   CaseMaterial,
   PhoneModel,
-} from "@prisma/client";
+} from "@/generated/prisma";
 
 export type saveConfigArgs = {
   color: CaseColor;
