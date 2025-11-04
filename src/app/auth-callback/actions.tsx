@@ -7,7 +7,7 @@ export const getAuthStatus = async () => {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
 
-  console.log("Kinde user:", user); // 🔥 Add this to see what's returned
+  console.log("Kinde user:", user);
   console.log("User ID:", user?.id);
   console.log("User email:", user?.email);
 
