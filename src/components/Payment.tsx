@@ -6,11 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-
-import { buttonVariants } from "./ui/button";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-
+4
 function PaymentModal({
   PaymentModalisOpen,
   PaymentModalsetIsOpen,

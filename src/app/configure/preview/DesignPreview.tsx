@@ -14,20 +14,20 @@ import LoginModal from "@/components/LoginModal";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import PaymentModal from "@/components/Payment";
 import { createCheckoutSession } from "./actions";
 
 function DesignPreview({ configuration }: { configuration: Configuration }) {
   const { id } = configuration;
   const { user } = useKindeBrowserClient();
+  console.log(user);
   const router = useRouter();
 
   const [showConfetti, setShowConfetti] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-  useEffect(() => setShowConfetti(true));
+  useEffect(() => setShowConfetti(true),[]);
 
   const { color, model, finish, material } = configuration;
 
@@ -54,7 +54,7 @@ function DesignPreview({ configuration }: { configuration: Configuration }) {
 
   const handleCheckout = () => {
     if (user) {
-      // // create payment session
+      // create payment session
       createPaymentSession({ configId: id });
       setIsPaymentModalOpen(true);
     } else {
