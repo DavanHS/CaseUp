@@ -19,11 +19,10 @@ export const getAuthStatus = async () => {
     where: { id: user.id },
   });
 
-  console.log("Existing user:", existingUser); // 🔥 Add this
+  console.log("Existing user:", existingUser);
 
   if (!existingUser) {
-    console.log("Creating new user..."); // 🔥 Add this
-    
+    console.log("Creating new user...");
     const newUser = await db.user.create({
       data: {
         id: user.id,
@@ -31,7 +30,7 @@ export const getAuthStatus = async () => {
       },
     });
     
-    console.log("Created user:", newUser); // 🔥 Add this
+    console.log("Created user:", newUser);
   }
 
   return { success: true };

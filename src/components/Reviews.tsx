@@ -160,7 +160,7 @@ export function Reviews() {
         alt="Decorative image showing what people are buying"
         width={200}
         height={200}
-        className="absolute select-none hidden xl:block -left-32 top-1/3"
+        className="absolute select-none hidden xl:block -left-32 top-1/3 w-[200px] h-auto"
       />
       <ReviewGrid />
     </MaxWidthWrapper>
