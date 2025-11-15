@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
+import { ArrowRight, Check, ChevronsUpDown, Ellipsis } from "lucide-react";
 import { BASE_PRICE } from "@/config/products";
 import { useUploadThing } from "@/lib/uploadthing";
 import { toast } from "sonner";
@@ -64,6 +64,8 @@ function DesignConfigurator({
       router.push(`/configure/preview?id=${configId}`);
     },
   });
+
+  const [btnOption, setBtnOption] = useState(false);
 
   const [options, setOptions] = useState<{
     color: (typeof COLORS)[number];
@@ -382,17 +384,19 @@ function DesignConfigurator({
                 )}
               </p>
               <Button
-                onClick={() =>
+                onClick={() => {
                   saveConfig({
                     configId,
                     color: options.color.value,
                     finish: options.finish.value,
                     material: options.material.value,
                     model: options.model.value,
-                  })
-                }
+                  });
+                  setBtnOption(true);
+                }}
                 size="lg"
                 className="flex-1"
+                disabled={btnOption}
               >
                 Continue <ArrowRight className="h-4 w-4 ml-1.5 inline" />
               </Button>

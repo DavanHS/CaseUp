@@ -30,8 +30,8 @@ function PhonePreview({
     handleResize();
 
     window.addEventListener("resize", handleResize);
-    return () => window.addEventListener("resize", handleResize);
-  });
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   let caseBackgroundColor = "bg-zinc-950";
   if (color === "blue") caseBackgroundColor = "bg-blue-950";
@@ -50,6 +50,7 @@ function PhonePreview({
       >
         <Image
           width={renderedDimensions.width / (3000 / 637)}
+          height={renderedDimensions.height / (2001 / 637)}
           className={cn(
             "phone-skew relative z-20 rounded-t-[15px] rounded-b-[10px] md:rounded-t-[30px] md:rounded-b-[20px]",
             caseBackgroundColor
@@ -63,6 +64,7 @@ function PhonePreview({
         <Image
           alt="phone"
           src="/clearphone.png"
+          fill
           className="pointer-events-none h-full w-full antialiased rounded-md"
         />
       </div>

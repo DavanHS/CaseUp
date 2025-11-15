@@ -3,7 +3,7 @@
 import Phone from "@/components/Phone";
 import { Button } from "@/components/ui/button";
 import { BASE_PRICE, PRODUCT_PRICES } from "@/config/products";
-import { Configuration } from "@prisma/client"
+import { Configuration } from "@prisma/client";
 import { cn, formatPrice } from "@/lib/utils";
 import { COLORS, MODELS } from "@/validators/option-validator";
 import { useMutation } from "@tanstack/react-query";
@@ -27,7 +27,7 @@ function DesignPreview({ configuration }: { configuration: Configuration }) {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-  useEffect(() => setShowConfetti(true),[]);
+  useEffect(() => setShowConfetti(true), []);
 
   const { color, model, finish, material } = configuration;
 
@@ -47,9 +47,9 @@ function DesignPreview({ configuration }: { configuration: Configuration }) {
   const { mutate: createPaymentSession } = useMutation({
     mutationKey: ["get-checkout-session"],
     mutationFn: createCheckoutSession,
-    onSuccess: ({url}) => {
-      if(url) router.push(url)
-    }
+    onSuccess: ({ url }) => {
+      if (url) router.push(url);
+    },
   });
 
   const handleCheckout = () => {
@@ -157,7 +157,10 @@ function DesignPreview({ configuration }: { configuration: Configuration }) {
             </div>
             <div className="mt-8 flex justify-end pb-12">
               <Button
-                onClick={() => handleCheckout()}
+                onClick={() => {
+                  handleCheckout();
+                  window.scrollTo({ top: 400, behavior: "smooth" });
+                }}
                 className="px-4 sm:px-6 lg:px-8"
               >
                 Check out <ArrowRight className="h-4 w-4 ml-1.5 inline" />
