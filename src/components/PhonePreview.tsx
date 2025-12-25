@@ -48,9 +48,9 @@ function PhonePreview({
           top: renderedDimensions.height / 6.22,
           height: renderedDimensions.height / (2001 / 637),
         }}
-        >
+      >
         <img
-        width={renderedDimensions.width / (3000 / 637)}
+          width={renderedDimensions.width / (3000 / 637)}
           className={cn(
             "phone-skew relative z-20 rounded-t-[15px] rounded-b-[10px] md:rounded-t-[30px] md:rounded-b-[20px]",
             caseBackgroundColor

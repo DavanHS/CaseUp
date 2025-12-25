@@ -11,19 +11,23 @@ export const ourFileRouter = {
             maxFileSize: "4MB",
             maxFileCount: 1,
         }
-    }).input(z.object({ configId: z.string().optional() }))
+    }).input(z.object({
+        configId: z.string().optional(),
+        width: z.number().optional(),
+        height: z.number().optional()
+    }))
         .middleware(async ({ input }) => {
 
             return { input };
         })
         .onUploadComplete(async ({ metadata, file }) => {
-            const { configId } = metadata.input
+            const { configId, width, height } = metadata.input
 
             const res = await fetch(file.ufsUrl);
             const buffer = await res.arrayBuffer();
 
-            const imgMetaData = await sharp(buffer).metadata();
-            const { width, height } = imgMetaData
+            // const imgMetaData = await sharp(buffer).metadata();
+            // const { width, height } = imgMetaData
 
             if (!configId) {
                 const configuration = await db.configuration.create({

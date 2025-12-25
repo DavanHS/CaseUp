@@ -9,6 +9,17 @@ import { useState, useTransition } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import { toast } from "sonner";
 
+const getImageDimensions = (file:File): Promise<{width: number, height: number}> => {
+  return new Promise((resolve) => {
+    const img = new window.Image()
+    img.src = URL.createObjectURL(file)
+    img.onload = () => {
+      resolve({width: img.naturalWidth, height: img.naturalHeight})
+      URL.revokeObjectURL(img.src)
+    }
+  })
+}
+
 const Page = () => {
   try {
     const [isDragOver, setIsDragOver] = useState<boolean>(false);
@@ -42,8 +53,10 @@ const Page = () => {
         duration: 3000,
       });
     };
-    const onDropAccepted = (acceptedFiles: File[]) => {
-      startUpload(acceptedFiles, { configId: undefined });
+    const onDropAccepted = async (acceptedFiles: File[]) => {
+      const file = acceptedFiles[0];
+      const {width, height} = await getImageDimensions(file)
+      startUpload(acceptedFiles, { configId: undefined, width, height });
       setIsDragOver(false);
     };
     const [isPending, startTransition] = useTransition();
