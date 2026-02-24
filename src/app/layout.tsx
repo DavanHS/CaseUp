@@ -19,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CaseUp - Case Your Phone Up Now!",
   description: "Create your phone case today",
+  icons: {
+    icon:"/icon.ico"
+  }
 };
 
 export default function RootLayout({
